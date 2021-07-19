@@ -1,0 +1,92 @@
+# -*- coding:utf-8 -*-
+import numpy as np
+import pandas as pd
+from datetime import datetime
+from pandas.core.frame import DataFrame
+import matplotlib.pyplot as plt
+import time
+import ast
+import json
+
+df = pd.read_csv('data.csv')
+#s = {'四川省绵阳中学':0, '四川省绵阳实验高级中学':0, '四川省绵阳市实验高级中学':0, '绵阳普明中学':0, '四川省绵阳南山中学双语学校':0, '绵阳南山中学实验学校':0, '四川省绵阳市丰谷中学':0, '四川省科学城第一中学':0, '三台中学校':0, '三台县芦溪中学':0, '三台一中':0, '四川省盐亭中学':0, '四川省绵阳市安州中学':0, '绵阳市秀水中学':0, '四川省梓潼中学校':0, '四川省北川中学':0, '江油中学':0, '四川省江油市第一中学':0, '江油市太白中学':0, '江油外国语学校':0, '南山中学':0, '绵阳中学实验学校':0, '三台中学实验学校':0}
+#k = {'四川省绵阳中学':0, '四川省绵阳实验高级中学':0, '四川省绵阳市实验高级中学':0, '绵阳普明中学':0, '四川省绵阳南山中学双语学校':0, '绵阳南山中学实验学校':0, '四川省绵阳市丰谷中学':0, '四川省科学城第一中学':0, '三台中学校':0, '三台县芦溪中学':0, '三台一中':0, '四川省盐亭中学':0, '四川省绵阳市安州中学':0, '绵阳市秀水中学':0, '四川省梓潼中学校':0, '四川省北川中学':0, '江油中学':0, '四川省江油市第一中学':0, '江油市太白中学':0, '江油外国语学校':0, '南山中学':0, '绵阳中学实验学校':0, '三台中学实验学校':0}
+total = []
+for index in range(0, 26124):
+    row_data = df.loc[index, :]
+    dt = "2055-01-01 01:01:01"
+#    dl = '2021-07-17 20:30:00'
+#    dm = '2021-07-18 00:00:00'
+#    ds = '2021-07-17 00:00:00'
+    d1 = datetime.strptime(dt, "%Y-%m-%d %H:%M:%S")
+#    d2 = datetime.strptime(dl, "%Y-%m-%d %H:%M:%S")
+#    dstop = datetime.strptime(dm, "%Y-%m-%d %H:%M:%S")
+#    dstart = datetime.strptime(ds, "%Y-%m-%d %H:%M:%S")
+    #时间的处理
+    start_time = row_data['start_time']
+    if str(start_time)!='nan':
+        start_time = datetime.strptime(start_time, "%Y-%m-%dT%H:%M:%S+08:00")
+    else:
+        start_time = d1
+    stop_time = row_data['stop_time']
+    if str(stop_time)!='nan':
+        stop_time = datetime.strptime(stop_time, "%Y-%m-%dT%H:%M:%S+08:00")
+    else:
+        stop_time = d1
+    #时间计算
+    if stop_time==d1 or start_time==d1:
+        total_sec = 0
+        total.append(total_sec)
+    else:
+        tot = (stop_time - start_time).seconds
+        total.append(tot)
+    '''#统计人数
+    if start_time>=dstart and stop_time <= dstop:
+        if total_sec<=600:
+            for i in s:
+                if i == row_data['school']:
+                    s[i]+=1
+    if stop_time<=d2:
+        if total_sec<=600:
+            for i in k:
+                if i == row_data['school']:
+                    k[i]+=1
+
+print(s)
+print(k)
+'''
+
+total = pd.DataFrame(total)
+total.to_excel('E:/桌面/暑期实习/train.xlsx')
+'''       
+print('科学小于10min:',mq10," 科学小于20min:", mq20, " 科学小于30min:", mq30)
+print('问题小于10min:',ms10," 问题小于20min:", ms20, " 问题小于30min:", ms30)
+
+values = [mq10, mq20 , mq30, mq40, mq50, mq60, mq]
+labels = ['less than 10min', 'less than 20min', 'less than 30min', 'less than 40min', 'less than 50min', 'less than 60min', 'more than 60min']
+
+def make_autopct(values):
+    def my_autopct(pct):
+        total = sum(values)
+        val = int(round(pct*total/100.0))
+        # 同时显示数值和占比的饼图
+        return '{p:.2f}%  ({v:d})'.format(p=pct,v=val)
+    return my_autopct
+
+plt.pie(values, labels=labels, autopct=make_autopct(values))
+plt.show()
+
+
+values = [ms10, ms20 , ms30, ms40, ms50, ms60, ms]
+labels = ['less than 10min', 'less than 20min', 'less than 30min', 'less than 40min', 'less than 50min', 'less than 60min', 'more than 60min']
+
+def make_autopct(values):
+    def my_autopct(pct):
+        total = sum(values)
+        val = int(round(pct*total/100.0))
+        # 同时显示数值和占比的饼图
+        return '{p:.2f}%  ({v:d})'.format(p=pct,v=val)
+    return my_autopct
+
+plt.pie(values, labels=labels, autopct=make_autopct(values))
+plt.show()'''
