@@ -1,0 +1,36 @@
+import numpy as np
+import pandas as pd
+from datetime import datetime
+from pandas.core.frame import DataFrame
+import matplotlib.pyplot as plt
+import time
+import ast
+import json
+
+df = pd.read_excel('data.xlsx')
+total_sec = []
+total = []
+total = pd.DataFrame(total)
+num = 0
+for index in range(0, 2707):
+    row_data = df.loc[index, :]
+    dt = "2055-01-01 01:01:01"
+    dlt = datetime.strptime(dt, "%Y-%m-%d %H:%M:%S")
+    start_time = row_data['start_time']
+    if str(start_time)!='nan':
+        start_time = datetime.strptime(start_time, "%Y-%m-%dT%H:%M:%S+08:00")
+    else:
+        start_time = dlt
+    stop_time = row_data['stop_time']
+    if str(stop_time)!='nan':
+        stop_time = datetime.strptime(stop_time, "%Y-%m-%dT%H:%M:%S+08:00")
+    else:
+        stop_time = dlt
+
+    if stop_time==dlt or start_time==dlt:
+        total_sec.append(0)
+    else:
+        tot = (stop_time - start_time).seconds
+        total_sec.append(tot)
+total['作答时间']  = total_sec
+total.to_excel('data_test.xlsx')
