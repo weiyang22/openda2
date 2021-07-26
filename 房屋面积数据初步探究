@@ -1,0 +1,83 @@
+import pandas as pd
+import time
+import numpy as np
+import matplotlib.pyplot as plt
+from ast import literal_eval
+
+data = pd.read_excel('data.xlsx')
+fdata = pd.DataFrame(data)
+columns = ['准考证号']
+tdata = fdata['时间戳'].copy()
+tdata = tdata.tolist()
+rdata = fdata['该时间戳下记录的作答结果'].copy()
+rdata = rdata.tolist()
+Fdata = fdata[columns]
+
+timeL = []
+for line in tdata:
+    timeL.append(line[0:10]+" "+line[11:19])
+
+timeL = np.array(timeL)
+Fdata['时间戳'] = timeL
+
+ranws = []
+tanws = []
+for line in rdata:
+    als = line[18:31]
+    tanws.append(als)
+    a = literal_eval(als)
+    b1 = [[1, 0, 1, 0, 1, 1], [1, 0, 1, 1, 1, 0], [0, 0, 1, 1, 1, 1], [1, 1, 1, 0, 0, 1], [1, 1, 1, 1, 0, 0],
+          [0, 1, 1, 1, 0, 1], [1, 1, 0, 0, 1, 1], [1, 1, 0, 1, 1, 0], [0, 1, 0, 1, 1, 1]]
+    b2 = [[1, 0, 1, 1, 0, 0], [1, 0, 1, 0, 1, 0], [1, 0, 1, 0, 0, 1], [1, 1, 1, 0, 0, 0], [1, 1, 0, 0, 1, 0],
+          [1, 1, 0, 1, 0, 0], [0, 1, 0, 1, 1, 0], [0, 1, 0, 0, 1, 1], [0, 0, 1, 1, 1, 0], [1, 0, 0, 1, 1, 0],
+          [0, 0, 1, 0, 1, 1]]
+    b3 = [[1, 0, 1, 0, 0, 0], [0, 0, 1, 1, 0, 0], [1, 0, 0, 1, 0, 0], [1, 1, 0, 0, 0, 0]]
+    if a in b1:
+        ranws.append('3')
+    elif a in b2:
+        ranws.append('2')
+    elif a in b3:
+        ranws.append('1')
+    else:
+        ranws.append('0')
+ranws = np.array(ranws)
+tanws = np.array(tanws)
+
+Fdata['作答过程'] = tanws
+Fdata['作答结果'] = ranws
+
+def P1(n):
+    x1 = []
+    x2 = []
+    y1 = []
+    x3 = []
+    sum1 = 0
+    sum2 = 0
+    sum3 = 0
+    sum4 = 0
+    F1data = Fdata[Fdata['准考证号'] == n]
+    F1_1data = F1data['作答结果']
+    for i in F1_1data:
+        if i == '1':
+            sum2 = int(sum2) + 1
+        elif i == '2':
+            sum3 = int(sum3) + 1
+        elif i == '3':
+            sum4 = int(sum4) + 1
+        sum1 = int(sum1)+1
+        print(sum1, sum2, sum3, sum4, i)
+        y1.append(sum1)
+        x1.append(sum2/sum1)
+        x2.append(sum3/sum1)
+        x3.append(sum4/sum1)
+    plt.tick_params(axis="x", labelsize = 15)
+    plt.plot(y1, x1)
+    plt.plot(y1, x2)
+    plt.plot(y1, x3)
+    plt.title('Find the key point 1, 2 and the line chart of the correct answer')
+    plt.xlabel('Number of operations')
+    plt.ylabel('probability')
+    plt.show()
+
+#调用函数  输入考号
+P1(1246)
